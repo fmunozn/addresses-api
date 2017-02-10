@@ -1,0 +1,12 @@
+package org.fmunozn.addresses;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class AddressesApiApplication {
+
+	public static void main(String[] args) {
+		SpringApplication.run(AddressesApiApplication.class, args);
+	}
+}
