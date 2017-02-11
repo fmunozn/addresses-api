@@ -15,7 +15,7 @@
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>1.5.1.RELEASE</version>
-		<relativePath/> <!-- lookup parent from repository -->
+		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 
 	<properties>
@@ -25,10 +25,17 @@
 	</properties>
 
 	<dependencies>
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-cache</artifactId>
 		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-jersey</artifactId>
@@ -39,7 +46,48 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+
+		<dependency>
+			<groupId>net.sf.ehcache</groupId>
+			<artifactId>ehcache</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
+
 	</dependencies>
+
+	<profiles>
+		<profile>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<id>local</id>
+			<properties>
+				<alliescomputing.api.key>test</alliescomputing.api.key>
+				<alliescomputing.api.scheme>http</alliescomputing.api.scheme>
+				<alliescomputing.api.hostname>localhost:8080/pcw</alliescomputing.api.hostname>
+				<alliescomputing.api.address.url>address</alliescomputing.api.address.url>
+				<alliescomputing.api.geo.url>addressgeo</alliescomputing.api.geo.url>
+				<alliescomputing.api.position.url>position</alliescomputing.api.position.url>
+				<alliescomputing.api.geo.reverse.url>rgeo</alliescomputing.api.geo.reverse.url>
+			</properties>
+		</profile>
+		<profile>
+			<id>integrated</id>
+			<properties>
+				<alliescomputing.api.key>PCW7Z-FLQ6Z-YXS86-QKG2P</alliescomputing.api.key>
+				<alliescomputing.api.scheme>https</alliescomputing.api.scheme>
+				<alliescomputing.api.hostname>ws.postcoder.com/pcw</alliescomputing.api.hostname>
+				<alliescomputing.api.address.url>address</alliescomputing.api.address.url>
+				<alliescomputing.api.geo.url>addressgeo</alliescomputing.api.geo.url>
+				<alliescomputing.api.position.url>position</alliescomputing.api.position.url>
+				<alliescomputing.api.geo.reverse.url>rgeo</alliescomputing.api.geo.reverse.url>
+			</properties>
+		</profile>
+	</profiles>
 
 	<build>
 		<plugins>
@@ -48,6 +96,12 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
 		</plugins>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
 	</build>
 
 

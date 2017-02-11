@@ -1,0 +1,22 @@
+<ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="ehcache.xsd"
+	updateCheck="true"
+	monitoring="autodetect"
+	dynamicConfig="true">
+
+	<diskStore path="src/main/resources/cache" />
+
+	<cache name="eircodeLookupCache"
+		maxEntriesLocalHeap="1000"
+		maxEntriesLocalDisk="1000000"
+		eternal="false"
+		diskSpoolBufferSizeMB="20"
+		timeToIdleSeconds="300" timeToLiveSeconds="3600000"
+		memoryStoreEvictionPolicy="LFU"
+		overflowToDisk="true"
+        diskPersistent="true" 
+		transactionalMode="off">		
+		
+	</cache>
+
+</ehcache>
