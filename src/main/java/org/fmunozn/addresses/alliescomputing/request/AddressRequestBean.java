@@ -23,17 +23,17 @@ public class AddressRequestBean implements Serializable {
 	/**
 	 * 	The number of lines over which to split each address
 	 */
-	private Integer lines;
+	private String lines;
 	
 	/**
 	 * Include extra address fields within the address lines returned
 	 */
-	private Boolean include;
+	private String include;
 	
 	/**
 	 * Exclude address fields within the address lines returned
 	 */
-	private Boolean exclude;
+	private String exclude;
 
 	/**
 	 * xml | json (default unless header of application/xml is detected)
@@ -54,12 +54,12 @@ public class AddressRequestBean implements Serializable {
 	/**
 	 * 	For use with searches that return more than 100 results (first page is 0)
 	 */
-	private Long page;
+	private String page;
 	
 	/**
 	 * 	Add extra address fields such as UDPRN to the return
 	 */
-	private Boolean addTags;
+	private String addTags;
 
 	public String getFragment() {
 		return fragment;
@@ -69,27 +69,27 @@ public class AddressRequestBean implements Serializable {
 		this.fragment = fragment;
 	}
 
-	public Integer getLines() {
+	public String getLines() {
 		return lines;
 	}
 
-	public void setLines(Integer lines) {
+	public void setLines(String lines) {
 		this.lines = lines;
 	}
 
-	public Boolean getInclude() {
+	public String getInclude() {
 		return include;
 	}
 
-	public void setInclude(Boolean include) {
+	public void setInclude(String include) {
 		this.include = include;
 	}
 
-	public Boolean getExclude() {
+	public String getExclude() {
 		return exclude;
 	}
 
-	public void setExclude(Boolean exclude) {
+	public void setExclude(String exclude) {
 		this.exclude = exclude;
 	}
 
@@ -117,11 +117,11 @@ public class AddressRequestBean implements Serializable {
 		this.callback = callback;
 	}
 
-	public Long getPage() {
+	public String getPage() {
 		return page;
 	}
 
-	public void setPage(Long page) {
+	public void setPage(String page) {
 		this.page = page;
 	}
 
@@ -129,11 +129,11 @@ public class AddressRequestBean implements Serializable {
 		return serialVersionUID;
 	}
 
-	public Boolean getAddTags() {
+	public String getAddTags() {
 		return addTags;
 	}
 
-	public void setAddTags(Boolean addTags) {
+	public void setAddTags(String addTags) {
 		this.addTags = addTags;
 	}
 	

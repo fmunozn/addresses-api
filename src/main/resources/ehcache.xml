@@ -4,17 +4,19 @@
 	monitoring="autodetect"
 	dynamicConfig="true">
 
-	<diskStore path="java.io.tmpdir" />
+	<diskStore path="src/main/resources/cache" />
 
 	<cache name="eircodeLookupCache"
-		maxEntriesLocalHeap="10000"
+		maxEntriesLocalHeap="1000"
 		maxEntriesLocalDisk="1000000"
 		eternal="false"
 		diskSpoolBufferSizeMB="20"
-		timeToIdleSeconds="300" timeToLiveSeconds="600"
+		timeToIdleSeconds="300" timeToLiveSeconds="3600000"
 		memoryStoreEvictionPolicy="LFU"
-		transactionalMode="off">
-		<persistence strategy="localTempSwap" />
+		overflowToDisk="true"
+        diskPersistent="true" 
+		transactionalMode="off">		
+		
 	</cache>
 
 </ehcache>

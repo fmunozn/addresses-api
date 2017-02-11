@@ -25,10 +25,7 @@
 	</properties>
 
 	<dependencies>
-		<dependency>
-			<groupId>net.sf.ehcache</groupId>
-			<artifactId>ehcache</artifactId>
-		</dependency>
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-cache</artifactId>
@@ -49,6 +46,17 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+
+		<dependency>
+			<groupId>net.sf.ehcache</groupId>
+			<artifactId>ehcache</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
+
 	</dependencies>
 
 	<profiles>
@@ -60,7 +68,7 @@
 			<properties>
 				<alliescomputing.api.key>test</alliescomputing.api.key>
 				<alliescomputing.api.scheme>http</alliescomputing.api.scheme>
-				<alliescomputing.api.hostname>localhost/pcw</alliescomputing.api.hostname>
+				<alliescomputing.api.hostname>localhost:8080/pcw</alliescomputing.api.hostname>
 				<alliescomputing.api.address.url>address</alliescomputing.api.address.url>
 				<alliescomputing.api.geo.url>addressgeo</alliescomputing.api.geo.url>
 				<alliescomputing.api.position.url>position</alliescomputing.api.position.url>
@@ -88,6 +96,12 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
 		</plugins>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
 	</build>
 
 

@@ -1,6 +1,8 @@
 package org.fmunozn.addresses.alliescomputing.repository.impl;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 import org.fmunozn.addresses.alliescomputing.repository.AlliesComputingRepository;
 import org.fmunozn.addresses.alliescomputing.request.EircodeRequestBean;
@@ -44,9 +46,9 @@ public class AlliesComputingRepositoryImpl implements AlliesComputingRepository 
 
 		HashMap<String,String> parameters  = new HashMap<String,String>();
 		parameters.put("lines", requestData.getLines().toString());
-		parameters.put("include", requestData.getInclude().toString());
+		parameters.put("include", requestData.getInclude());
 		parameters.put("format", requestData.getFormat());
-		parameters.put("addTags", requestData.getAddTags().toString());
+		parameters.put("addTags", requestData.getAddTags());
 		parameters.put("identifier", requestData.getIdentifier());
 		parameters.put("callback", requestData.getCallback());
 		parameters.put("page", requestData.getPage().toString());
@@ -63,28 +65,35 @@ public class AlliesComputingRepositoryImpl implements AlliesComputingRepository 
 	}
 
 	@Override
-	@Cacheable(value="eircodeLookupCache", key="#requestData")
-	public EircodeResponseBean eircodeLookup(EircodeRequestBean requestData) {
+	@Cacheable(value="eircodeLookupCache", key="#requestData.fragment")
+	public List<EircodeResponseBean> eircodeLookup(EircodeRequestBean requestData) {
 
+	    try {
+            Thread.sleep(5000);
+            logger.debug("Sleep Request");
+        } catch (InterruptedException e) {
+            throw new IllegalStateException(e);
+        }		
 		String urlString = generateUrl("ie", requestData.getFragment(), LookupEnum.LOOKUP_TYPE_ADDRESS.toString(), null, null);
 
 		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(urlString);
 
 		HashMap<String,String> parameters  = new HashMap<String,String>();
-		parameters.put("lines", requestData.getLines().toString());
-		parameters.put("include", requestData.getInclude().toString());
+		parameters.put("lines", requestData.getLines());
+		parameters.put("include", requestData.getInclude());
 		parameters.put("format", requestData.getFormat());
 		parameters.put("identifier", requestData.getIdentifier());
 		parameters.put("callback", requestData.getCallback());
-		parameters.put("page", requestData.getPage().toString());
+		parameters.put("page", requestData.getPage());
 
 		Utilities.addRequestsParams(builder, parameters);	
 
-		RestTemplate restTemplate = new RestTemplate();	
+		RestTemplate restTemplate = new RestTemplate();
+		
 
-		HttpEntity<EircodeResponseBean> response = restTemplate.getForEntity(builder.build().encode().toUri(), EircodeResponseBean.class);
+		HttpEntity<EircodeResponseBean []> response = restTemplate.getForEntity(builder.build().encode().toUri(), EircodeResponseBean[].class);
 
-		return response.getBody();
+		return Arrays.asList(response.getBody());
 	
 	}
 	
@@ -96,12 +105,12 @@ public class AlliesComputingRepositoryImpl implements AlliesComputingRepository 
 		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(urlString);
 
 		HashMap<String,String> parameters  = new HashMap<String,String>();
-		parameters.put("lines", requestData.getLines().toString());
-		parameters.put("include", requestData.getInclude().toString());
+		parameters.put("lines", requestData.getLines());
+		parameters.put("include", requestData.getInclude());
 		parameters.put("format", requestData.getFormat());
 		parameters.put("identifier", requestData.getIdentifier());
 		parameters.put("callback", requestData.getCallback());
-		parameters.put("page", requestData.getPage().toString());
+		parameters.put("page", requestData.getPage());
 
 		Utilities.addRequestsParams(builder, parameters);	
 
@@ -145,13 +154,13 @@ public class AlliesComputingRepositoryImpl implements AlliesComputingRepository 
 
 		HashMap<String,String> parameters  = new HashMap<String,String>();
 
-		parameters.put("lines", requestData.getLines().toString());
-		parameters.put("include", requestData.getInclude().toString());
+		parameters.put("lines", requestData.getLines());
+		parameters.put("include", requestData.getInclude());
 		parameters.put("format", requestData.getFormat());
 		parameters.put("identifier", requestData.getIdentifier());
 		parameters.put("callback", requestData.getCallback());
-		parameters.put("page", requestData.getPage().toString());
-		parameters.put("distance", requestData.getDistance().toString());
+		parameters.put("page", requestData.getPage());
+		parameters.put("distance", requestData.getDistance());
 
 		Utilities.addRequestsParams(builder, parameters);	
 
@@ -172,19 +181,19 @@ public class AlliesComputingRepositoryImpl implements AlliesComputingRepository 
 		
 		case "ADDRESS":
 			
-			url = url + this.alliesComputingProperties.getApiAddressUrl()+"/"+country+"/";
+			url = url + this.alliesComputingProperties.getApiAddressUrl()+"/"+country+"/"+fragment;
 			logger.debug("Address without geolocation requested: "+url);
 			break;
 
 		case "ADDRESS_GEOLOCATION":
 
-			url = url + this.alliesComputingProperties.getApiGeolocationUrl()+"/"+country+"/";
+			url = url + this.alliesComputingProperties.getApiGeolocationUrl()+"/"+country+"/"+fragment;
 			logger.debug("Address with geolocation requested: "+url);
 			break;
 			
 		case "POSITION":
 
-			url = url + this.alliesComputingProperties.getApiPositionUrl()+"/"+country+"/";
+			url = url + this.alliesComputingProperties.getApiPositionUrl()+"/"+country+"/"+fragment;
 			logger.debug("Position requested: "+url);
 			break;
 			

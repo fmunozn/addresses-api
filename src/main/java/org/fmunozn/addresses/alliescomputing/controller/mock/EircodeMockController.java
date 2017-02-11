@@ -23,7 +23,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RestController
 @RequestMapping(path="/pcw/test")
-public class EircodeController {
+public class EircodeMockController {
 
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 

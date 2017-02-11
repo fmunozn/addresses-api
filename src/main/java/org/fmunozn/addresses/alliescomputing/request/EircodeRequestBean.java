@@ -16,18 +16,18 @@ public class EircodeRequestBean extends AddressRequestBean{
 	/**
 	 * Distance in metres to perform request with geocoordinates.
 	 */
-	private Long distance;
+	private String distance;
 	
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;
 	}
 	
-	public Long getDistance() {
+	public String getDistance() {
 		return distance;
 	}
 
-	public void setDistance(Long distance) {
+	public void setDistance(String distance) {
 		this.distance = distance;
 	}	
 

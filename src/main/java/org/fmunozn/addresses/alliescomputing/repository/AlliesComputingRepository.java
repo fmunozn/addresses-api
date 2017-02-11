@@ -1,5 +1,7 @@
 package org.fmunozn.addresses.alliescomputing.repository;
 
+import java.util.List;
+
 import org.fmunozn.addresses.alliescomputing.request.EircodeRequestBean;
 import org.fmunozn.addresses.alliescomputing.request.PremiseRequestBean;
 import org.fmunozn.addresses.alliescomputing.response.EircodeResponseBean;
@@ -9,7 +11,7 @@ public interface AlliesComputingRepository {
 	
 	public PremiseResponseBean fullUkPremiseAddressLookup(PremiseRequestBean requestData);
 	
-	public EircodeResponseBean eircodeLookup(EircodeRequestBean requestData);
+	public List<EircodeResponseBean> eircodeLookup(EircodeRequestBean requestData);
 	
 	public EircodeResponseBean eircodeAndCoordinateLookup(EircodeRequestBean requestData);
 	

@@ -17,27 +17,27 @@ public class PremiseRequestBean extends AddressRequestBean {
 	/**
 	 * 	Use true to limit your search to just the postcode field.
 	 */
-	private Boolean postcodeOnly;
+	private String postcodeOnly;
 	
 	/**
 	 * Use true to include alternative names for addresses known to and accepted by Royal Mail
 	 */
-	private Boolean alias;
+	private String alias;
 
 	
-	public Boolean getPostcodeOnly() {
+	public String getPostcodeOnly() {
 		return postcodeOnly;
 	}
 
-	public void setPostcodeOnly(Boolean postcodeOnly) {
+	public void setPostcodeOnly(String postcodeOnly) {
 		this.postcodeOnly = postcodeOnly;
 	}
 
-	public Boolean getAlias() {
+	public String getAlias() {
 		return alias;
 	}
 
-	public void setAlias(Boolean alias) {
+	public void setAlias(String alias) {
 		this.alias = alias;
 	}		
 
