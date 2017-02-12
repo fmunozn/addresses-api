@@ -3,22 +3,72 @@
 		<div class="panel-heading">
 			<span">Eircode & Address Search Form</span>
 		</div>
-		<form name="addressSearchForm" class="form-inline">
-			<div class="form-group mx-sm-3">
+		<form name="addressSearchForm" class="form-group mx-sm-3">
+			<div class="container-fluid">
+				<label for="addressSearch">Address & Eircode</label>
+				<input id="addressSearch" type="radio" name="content" ng-model="searchMode" value="1">
+				<label for="addressSearch">Reverse Geolocation</label>			
+				<input id="geoSearchSearch" type="radio" name="content" ng-model="searchMode" value="2">
+			</div>
+			<div class="form-group mx-sm-3" ng-if="searchMode==1")>
 				<div class="container-fluid">
-				
-				<div class="row"></div>				
-				<label class="lgFormGroupInput" for="fragment">Address Fragment Or Eircode</label>
-				<input class="field-style field-split align-left" type="text" ng-model="address.fragment" id="fragment"
+				<div class="row">
+					<div class="col-md-6"><label class="lgFormGroupInput" for="fragment">Address Fragment Or Eircode</label></div>
+					<div class="col-md-4">
+						<input class="field-style field-split align-left" type="text" ng-model="address.fragment" id="fragment"
 						placeholder="Enter the desired Eircode or Address fragment"	required ng-minlength="5" />
-				<div class="has-error" ng-show="addressSearchForm.$dirty">
-					<span ng-show="addressSearchForm.$dirty.fragment.$error.required">This is a required field</span>
-					<span ng-show="addressSearchForm.fragment.$error.minlength">Minimum length required is 5</span>
-					<span ng-show="addressSearchForm.fragment.$invalid">This field is invalid </span>
+						<div class="has-error" ng-show="addressSearchForm.$dirty">
+							<span ng-show="addressSearchForm.$dirty.fragment.$error.required">This is a required field</span>
+							<span ng-show="addressSearchForm.fragment.$error.minlength">Minimum length required is 5</span>
+							<span ng-show="addressSearchForm.fragment.$invalid">This field is invalid </span>
+						</div>
+					</div>
+					<div class="col-md-2">
+						<button type="submit" ng-click="searchAddress(address.fragment)">Search</button>
+					</div>
 				</div>
-				<button type="submit" class="btn btn-primary btn-xs" ng-click="searchAddress(address.fragment)">Search</button>
 				</div>
 			</div>
+			
+			<div class="form-group mx-sm-3" ng-if="searchMode==2")>
+				<div class="container-fluid">
+				<div class="row">
+					<div class="row">
+						<div class="col-md-6">
+							<label class="col-md-12" for="longitude">Longitude (-90 <= L <= 90)</label>
+ 						</div>
+						<div class="col-md-6">
+							<input class="field-style field-split align-left" type="text" ng-model="address.longitude"
+								id="longitude" placeholder="Enter the desired Longitude"/>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-6">				
+							<label class="col-md-12 control-lable" for="latitude">Latitude (-180 <= L <= 180)</label>
+						</div>
+						<div class="col-md-6">			
+							<input class="field-style field-split align-left" type="text" ng-model="address.latitude" id="latitude"
+								placeholder="Enter the desired Latitude"/>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-6">
+							<label class="col-md-12 control-lable" for="distance">Distance in Metres > 0 </label>
+						</div>
+						<div class="col-md-6">						
+							<input class="field-style field-split align-left" type="text" ng-model="address.distance" id="distance"
+								placeholder="Enter the desired distance"/>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-offset-2 col-sm-4">
+							<button type="submit" class="btn btn-primary btn-block" ng-click="searchAddress(longitude,latitude,distance)">Search</button>
+						</div>
+					</div>
+				</div>
+				</div>	
+			</div>
+			
 		</form>
 	</div>
  	<div class="panel panel-default">
@@ -28,24 +78,44 @@
 		<div class="formcontainer">
 			<form name="addressDetailsForm" class="form-horizontal" ng-show="showTheForm">
 				<div class="row">
-					<label class="col-md-4 control-lable" for="selectedStreet">Street:</label>
-					<input class="field-style field-split align-left" type="text" ng-model="selectedAddress.street" readonly/>
+					<div class="col-md-6">				
+						<label class="col-md-12 control-lable" for="selectedStreet">Street:</label>
+					</div>
+					<div class="col-md-6">				
+						<input class="field-style field-split align-left" type="text" ng-model="selectedAddress.street" readonly/>
+					</div>
 				</div>
 				<div class="row">
-					<label class="col-md-4 control-lable" for="selectedNumber">Number:</label>
-					<input class="field-style field-split align-left" type="text" ng-model="selectedAddress.number" readonly/>
+					<div class="col-md-6">				
+						<label class="col-md-12 control-lable" for="selectedNumber">Number:</label>
+					</div>
+					<div class="col-md-6">				
+						<input class="field-style field-split align-left" type="text" ng-model="selectedAddress.number" readonly/>
+					</div>						
 				</div>
 				<div class="row">
-					<label class="col-md-4 control-lable" for="selectedPostCode">Post Code:</label>
-					<input class="field-style field-split align-left" type="text" ng-model="selectedAddress.postcode" readonly/>					
+					<div class="col-md-6">				
+						<label class="col-md-12 control-lable" for="selectedPostCode">Post Code:</label>
+					</div>
+					<div class="col-md-6">	
+						<input class="field-style field-split align-left" type="text" ng-model="selectedAddress.postcode" readonly/>
+					</div>			
 				</div>
 				<div class="row">
-					<label class="col-md-4 control-lable" for="selectedPostTown">Post Town:</label>
-					<input class="field-style field-split align-left" type="text" ng-model="selectedAddress.posttown" readonly/>
+					<div class="col-md-6">				
+						<label class="col-md-12 control-lable" for="selectedPostTown">Post Town:</label>
+					</div>
+					<div class="col-md-6">	
+						<input class="field-style field-split align-left" type="text" ng-model="selectedAddress.posttown" readonly/>
+					</div>
 				</div>
 				<div class="row">
-					<label class="col-md-4 control-lable" for="selectedCounty">County:</label>
-					<input class="field-style field-split align-left" type="text" ng-model="selectedAddress.county" readonly/>
+					<div class="col-md-6">				
+						<label class="col-md-12 control-lable" for="selectedCounty">County:</label>
+					</div>
+					<div class="col-md-6">	
+						<input class="field-style field-split align-left" type="text" ng-model="selectedAddress.county" readonly/>
+					</div>
 				</div>
 			</form>
 		</div>
@@ -59,8 +129,8 @@
 			<table class="table table-hover">
 				<thead>
 					<tr>
-						<th width="10%">More Details</th>
- 						<th width="90%">Summary</th>
+						<th width="20%">More Details</th>
+ 						<th width="80%">Summary</th>
 						<!-- <th width="30%"></th>
 						<th>Organisation</th>
 						<th width="10%"></th>
