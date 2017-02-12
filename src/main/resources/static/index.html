@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html ng-app="addressApp">
+<head>
+<meta charset="utf-8" />
+<title>Eircode & Address Lookup</title>
+
+<link
+	href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css"
+	rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="css/styles.css">
+
+
+<!-- Angular Libraries -->
+<script
+	src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.min.js"></script>
+<script
+	src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular-route.js"></script>
+
+
+<!-- Application Scripts -->
+<script src="app.js"></script>
+<script src="js/address_service.js"></script>
+<script src="js/address_controller.js"></script>
+
+</head>
+
+<body>
+
+    <div class="container">    
+          <div ng-view></div>
+    </div>
+
+
+	<!-- 		<form ng-submit="addressCtrl" ng-controller="MainController">
+			<input type="text" name="address_fragment"
+				ng-model="addressesForm.address_fragment"> Address Fragment
+			or Eircode <br /> <input type="submit" id="submit" value="Submit" />
+
+		</form>-->
+</body>
+
+</html>

@@ -1,0 +1,105 @@
+<div class="form-style-9">
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<span">Eircode & Address Search Form</span>
+		</div>
+		<form name="addressSearchForm" class="form-inline">
+			<div class="form-group mx-sm-3">
+				<div class="container-fluid">
+				
+				<div class="row"></div>				
+				<label class="lgFormGroupInput" for="fragment">Address Fragment Or Eircode</label>
+				<input class="field-style field-split align-left" type="text" ng-model="address.fragment" id="fragment"
+						placeholder="Enter the desired Eircode or Address fragment"	required ng-minlength="5" />
+				<div class="has-error" ng-show="addressSearchForm.$dirty">
+					<span ng-show="addressSearchForm.$dirty.fragment.$error.required">This is a required field</span>
+					<span ng-show="addressSearchForm.fragment.$error.minlength">Minimum length required is 5</span>
+					<span ng-show="addressSearchForm.fragment.$invalid">This field is invalid </span>
+				</div>
+				<button type="submit" class="btn btn-primary btn-xs" ng-click="searchAddress(address.fragment)">Search</button>
+				</div>
+			</div>
+		</form>
+	</div>
+ 	<div class="panel panel-default">
+		<div class="panel-heading">
+			<span class="lead">Address Details Form</span>
+		</div>
+		<div class="formcontainer">
+			<form name="addressDetailsForm" class="form-horizontal" ng-show="showTheForm">
+				<div class="row">
+					<label class="col-md-4 control-lable" for="selectedStreet">Street:</label>
+					<input class="field-style field-split align-left" type="text" ng-model="selectedAddress.street" readonly/>
+				</div>
+				<div class="row">
+					<label class="col-md-4 control-lable" for="selectedNumber">Number:</label>
+					<input class="field-style field-split align-left" type="text" ng-model="selectedAddress.number" readonly/>
+				</div>
+				<div class="row">
+					<label class="col-md-4 control-lable" for="selectedPostCode">Post Code:</label>
+					<input class="field-style field-split align-left" type="text" ng-model="selectedAddress.postcode" readonly/>					
+				</div>
+				<div class="row">
+					<label class="col-md-4 control-lable" for="selectedPostTown">Post Town:</label>
+					<input class="field-style field-split align-left" type="text" ng-model="selectedAddress.posttown" readonly/>
+				</div>
+				<div class="row">
+					<label class="col-md-4 control-lable" for="selectedCounty">County:</label>
+					<input class="field-style field-split align-left" type="text" ng-model="selectedAddress.county" readonly/>
+				</div>
+			</form>
+		</div>
+	</div>
+	<div class="panel panel-default">
+		<!-- Default panel contents -->
+		<div class="panel-heading">
+			<span class="lead">List of Addresses </span>
+		</div>
+		<div class="tablecontainer">
+			<table class="table table-hover">
+				<thead>
+					<tr>
+						<th width="10%">More Details</th>
+ 						<th width="90%">Summary</th>
+						<!-- <th width="30%"></th>
+						<th>Organisation</th>
+						<th width="10%"></th>
+						<th>Street</th>
+						<th width="20%"></th>						
+						<th>Number</th>
+						<th width="3%"></th>
+						<th>Premise</th>
+						<th width="10%"></th>
+						<th>Post Code</th>
+						<th width="10%"></th>
+						<th>Post Town</th>
+						<th width="10%"></th>
+						<th>County</th>
+						<th width="10%"></th>-->
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="addr in addresses">
+ 					    <td>
+              				<button ng-if="addr.expanded" ng-click="collapseAndRemoveDetails(addr)">-</button>
+              				<button ng-if="!addr.expanded" ng-click="expandAndfillDetails(addr)">+</button>
+            			</td>
+            			<td><span ng-bind="addr.summaryline"></span></td>
+            			
+						
+						<!-- <td><span ng-bind="addr.organisation"></span></td>
+						addr.expanded = false
+						addr.expanded
+						<td><span ng-bind="addr.street"></span></td>
+						<td><span ng-bind="addr.number"></span></td>
+						<td><span ng-bind="addr.premise"></span></td>
+						<td><span ng-bind="addr.postcode"></span></td>
+						<td><span ng-bind="addr.posttown"></span></td>
+						<td><span ng-bind="addr.county"></span></td> -->						
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+
+</div>
