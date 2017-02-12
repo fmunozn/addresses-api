@@ -1,29 +1,25 @@
 package org.fmunozn.addresses.controller;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.fmunozn.addresses.alliescomputing.request.EircodeRequestBean;
 import org.fmunozn.addresses.alliescomputing.response.EircodeResponseBean;
+import org.fmunozn.addresses.exception.APIEircodeRequestValidationException;
 import org.fmunozn.addresses.service.EircodeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 /**
@@ -41,81 +37,76 @@ public class APIEircodeController {
 	@RequestMapping(path="/address/ie/{fragment}", method=RequestMethod.GET, produces=MediaType.APPLICATION_JSON_VALUE)
 	public @ResponseBody List<EircodeResponseBean> addressLookup(
 			@PathVariable String fragment,
-			@RequestParam(value="lines", required=false) Integer lines
-			) {
+			@RequestParam(value="lines", required=false) Long lines,
+			@RequestParam(value="include", required=false) Boolean include,
+			@RequestParam(value="exclude", required=false) Boolean exclude,
+			@RequestParam(value="identifier", required=false) String identifier,
+			@RequestParam(value="callback", required=false) String callback,
+			@RequestParam(value="page", required=false) Long page
+			) throws APIEircodeRequestValidationException {
 
 		logger.info("Request Eircode Address Service");
 		logger.debug("Fragment: "+fragment);
-		
-		EircodeRequestBean requestData = new EircodeRequestBean();
-		requestData.setFragment(fragment);
-		requestData.setLines(lines.toString());
+
+		EircodeRequestBean requestData = parseToEircodeRequestBean(fragment, lines, include, exclude,
+				page, null, null, null, null); 		
+		requestData.setIdentifier(identifier);
+		requestData.setCallback(callback);
 		requestData.setFormat("json");		
 
 		List<EircodeResponseBean> eircodeResponses = eircodeService.eircodeLookup(requestData);
-
 
 		return eircodeResponses;		
 
 	}
 
 	@RequestMapping(path="/addressgeo/ie/{fragment}", method=RequestMethod.GET, produces=MediaType.APPLICATION_JSON_VALUE)
-	public @ResponseBody ArrayList<EircodeResponseBean> addressGeoLookup(
+	public @ResponseBody List<EircodeResponseBean> addressGeoLookup(
 			@PathVariable String fragment,
 			@RequestParam(value="lines", required=false) Long lines,
-			@RequestParam(value="addtags", required=false) String addtags
-			) {
+			@RequestParam(value="addtags", required=false) String addtags,
+			@RequestParam(value="include", required=false) Boolean include,
+			@RequestParam(value="exclude", required=false) Boolean exclude,
+			@RequestParam(value="identifier", required=false) String identifier,
+			@RequestParam(value="callback", required=false) String callback,
+			@RequestParam(value="page", required=false) Long page
+			) throws APIEircodeRequestValidationException {
 
-		ArrayList<EircodeResponseBean> eircodeResponses = new ArrayList<EircodeResponseBean>(); 
-
-		logger.info("Request Address Geo Mock Service");
+		logger.info("Request Address Geo Service");
 		logger.debug("Fragment: "+fragment);
 
-		if(fragment.equalsIgnoreCase("Adelaide Road")){
 
-			EircodeResponseBean response = new EircodeResponseBean();
-			response.setAddressline1("Dept of Communications, Climate Change and Natural Resources");
-			response.setAddressline2("29-31 Adelaide Road");
-			response.setSummaryline("Dept of Communications, Climate Change and Natural Resources, 29-31 Adelaide Road, Dublin 2, D02 X285");
-			response.setOrganisation("Dept of Communications, Climate Change and Natural Resources");
-			response.setNumber("29-31");
-			response.setPremise("29-31");
-			response.setStreet("Adelaide Road");
-			response.setPosttown("Dublin 2");
-			response.setCounty("Dublin");
-			response.setPostcode("D02 X285");
-			response.setLatitude("53.332067");
-			response.setLongitude("-6.255492");
-			if(addtags != null && addtags.equalsIgnoreCase("w3w")){
-				response.setWhat3words("lease.wiped.life");				
-			}
+		EircodeRequestBean requestData = parseToEircodeRequestBean(fragment, lines, include, exclude,
+				page, null, null, null, null);
+		requestData.setAddTags(addtags);
+		requestData.setIdentifier(identifier);
+		requestData.setCallback(callback);
+		requestData.setFormat("json");		
 
-			eircodeResponses.add(response);
-
-		}
+		List<EircodeResponseBean> eircodeResponses = eircodeService.eircodeAndCoordinateLookup(requestData);
 
 		return eircodeResponses;		
 
 	}
 
 	@RequestMapping(path="/position/ie/{eircode}", method=RequestMethod.GET, produces=MediaType.APPLICATION_JSON_VALUE)
-	public @ResponseBody ArrayList<EircodeResponseBean> coordinateLookup(
-			@PathVariable String eircode,
-			@RequestParam(value="lines", required=false) Long lines) {
+	public @ResponseBody List<EircodeResponseBean> coordinateLookup(@PathVariable String eircode) {
 
-		ArrayList<EircodeResponseBean> eircodeResponses = new ArrayList<EircodeResponseBean>(); 
-
-		logger.info("Request Eircode coordinates Mock Service");
+		logger.info("Request Eircode coordinates Service");
 		logger.debug("Fragment: "+eircode);
 
-		if(eircode.equalsIgnoreCase("D02X285")){
+		ArrayList<EircodeResponseBean> eircodeResponses = new ArrayList<EircodeResponseBean>(); 
+		Boolean valid = validateEircode(eircode);
 
-			EircodeResponseBean response = new EircodeResponseBean();
-			response.setLatitude("53.332067");
-			response.setLongitude("-6.255492");
+		if(valid){
 
-			eircodeResponses.add(response);
+			logger.debug("Valid Eircode: "+eircode);
 
+			EircodeRequestBean requestData = new EircodeRequestBean();
+			requestData.setFragment(eircode);
+			requestData.setFormat("json");
+
+			eircodeService.coordinateLookup(requestData);
 		}
 
 		return eircodeResponses;		
@@ -123,41 +114,184 @@ public class APIEircodeController {
 	}
 
 	@RequestMapping(path="/rgeo/ie/{latitude:.+}/{longitude:.+}", method=RequestMethod.GET, produces=MediaType.APPLICATION_JSON_VALUE)
-	public @ResponseBody ArrayList<EircodeResponseBean> coordinateReverseLookup(
-			@PathVariable String latitude,
-			@PathVariable String longitude,
+	public @ResponseBody List<EircodeResponseBean> coordinateReverseLookup(
+			@PathVariable Double latitude,
+			@PathVariable Double longitude,
+			@RequestParam(value="lines", required=false) Long lines,
 			@RequestParam(value="distance", required=true) Long distance,
-			@RequestParam(value="lines", required=false) Long lines) {
+			@RequestParam(value="include", required=false) Boolean include,
+			@RequestParam(value="exclude", required=false) Boolean exclude,
+			@RequestParam(value="identifier", required=false) String identifier,
+			@RequestParam(value="callback", required=false) String callback,
+			@RequestParam(value="page", required=false) Long page
+			) throws APIEircodeRequestValidationException{
 
-		ArrayList<EircodeResponseBean> eircodeResponses = new ArrayList<EircodeResponseBean>(); 
-
-		logger.info("Request Eircode reverse coordinates Mock Service");
+		logger.info("Request Eircode reverse coordinates Service");
 		logger.debug("Latitude: "+latitude+ " Longitude: "+longitude);
 
-		if(latitude.equals("53.332067") &&
-				longitude.equals("-6.255492") &&
-				distance != null &&
-				distance == 50L
-				){
+		EircodeRequestBean requestData = parseToEircodeRequestBean(null, lines, include, exclude,
+				page, null, latitude, longitude, distance); 
+		requestData.setFormat("json");		
 
-			ObjectMapper mapper = new ObjectMapper();
-			mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-			
-			try {
-				eircodeResponses = mapper.readValue(
-						new File("src/main/resources/reverseCoordResponse.json"), new TypeReference<ArrayList<EircodeResponseBean>>(){});
-			} catch (JsonParseException e) {
-				logger.error("Problem parsing address file in reverse coordinate lookup"+e.getMessage());
-			} catch (JsonMappingException e) {
-				logger.error("Problem mapping address file to Json in reverse coordinate lookup. "+e.getMessage());
-			} catch (IOException e) {
-				logger.error("IO Problem reading address file in reverse coordinate lookup. "+e.getMessage());
+		List<EircodeResponseBean> eircodeResponses = eircodeService.reverseGeoLookup(requestData);
+
+		return eircodeResponses;
+
+	}
+
+
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	@ExceptionHandler(value = { APIEircodeRequestValidationException.class })
+	public @ResponseBody String handleValidation( Exception e) { 
+				
+		return e.getMessage();
+		
+	}
+
+
+	/**
+	 * Method to validate request parameters
+	 * @param fragment
+	 * @param lines
+	 * @param include
+	 * @param exclude
+	 * @param page
+	 * @param addtags
+	 * @param latitude
+	 * @param longitude
+	 * @param distance
+	 * @return
+	 * @throws APIEircodeRequestValidationException
+	 */
+	private EircodeRequestBean parseToEircodeRequestBean(
+			String fragment,
+			Long lines,
+			Boolean include,
+			Boolean exclude,
+			Long page,
+			String addtags,
+			Double latitude,
+			Double longitude,
+			Long distance) throws APIEircodeRequestValidationException {
+
+		EircodeRequestBean requestData = new EircodeRequestBean();
+
+		// We define a 5 chars as minimum searchable fragment
+		// This way we will avoid unnecesary requests to the API
+		if(fragment != null){
+
+			if(fragment.length() > 5){			
+
+				requestData.setFragment(fragment);
+
+			}else{
+
+				throw new APIEircodeRequestValidationException("Empty or wrong fragment - it has to be at least 5 chars length");
+
+			}
+		}else{
+
+			if(latitude != null){
+
+				if(latitude >= -90 && latitude <= 90){
+
+					requestData.setLatitude(latitude.toString());
+
+				}else{
+
+					throw new APIEircodeRequestValidationException("Wrong latitude parameter - it has to be between -90 and +90");			
+
+				}
+
+			}
+
+			if(longitude != null){
+
+				if(longitude >= -180 && longitude <= 180){
+
+					requestData.setLongitude(longitude.toString());
+
+				}else{
+
+					throw new APIEircodeRequestValidationException("Wrong longitude parameter - it has to be between -180 and +180");			
+
+				}
+
+			}	
+
+			if(distance != null){
+
+				if(distance >= 1){
+
+					requestData.setDistance(distance.toString());
+
+				}else{
+
+					throw new APIEircodeRequestValidationException("Wrong distance parameter - it has to higher than 0 metres");			
+
+				}
+
+			}
+
+			requestData.setFragment(fragment);
+
+
+		}
+
+		if(lines != null) {
+
+			if(lines < 4 && lines > 0){
+
+				requestData.setLines(lines.toString());
+
+			}else{
+
+				throw new APIEircodeRequestValidationException("Wrong number of additional lines - it has to be between 1 and 4");			
+
 			}
 
 		}
 
-		return eircodeResponses;		
+		if(include != null)			
+			requestData.setInclude(include.toString());
+
+		if(exclude != null)
+			requestData.setExclude(exclude.toString());
+
+		if(page != null) {
+			
+			if(page >= 0){
+				
+				requestData.setPage(page.toString());
+				
+			}else{
+				
+				throw new APIEircodeRequestValidationException("Wrong page number - it has to be 0 or more");			
+				
+			}
+		}
+			
+
+
+
+		return requestData;
 
 	}
-	
+
+	/**
+	 * Method to validate eircode lenght
+	 * @param eircode
+	 * @return
+	 */
+	private Boolean validateEircode(String eircode){
+
+		Boolean valid = false;
+
+		if(eircode.length() == 7)
+			valid = true;
+
+		return valid;
+
+	}
+
 }

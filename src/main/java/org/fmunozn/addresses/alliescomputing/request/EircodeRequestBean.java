@@ -18,7 +18,10 @@ public class EircodeRequestBean extends AddressRequestBean{
 	 */
 	private String distance;
 	
-
+	private String latitude;
+	
+	private String longitude;
+	
 	public static long getSerialversionuid() {
 		return serialVersionUID;
 	}
@@ -35,6 +38,20 @@ public class EircodeRequestBean extends AddressRequestBean{
 		super();
 	}
 
+	public String getLatitude() {
+		return latitude;
+	}
 
+	public void setLatitude(String latitude) {
+		this.latitude = latitude;
+	}
+
+	public String getLongitude() {
+		return longitude;
+	}
+
+	public void setLongitude(String longitude) {
+		this.longitude = longitude;
+	}
 	
 }

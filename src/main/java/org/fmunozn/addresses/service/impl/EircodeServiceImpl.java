@@ -35,20 +35,17 @@ public class EircodeServiceImpl implements EircodeService {
 
 	@Override
 	public List<EircodeResponseBean> eircodeAndCoordinateLookup(EircodeRequestBean requestData) {
-		// TODO Auto-generated method stub
-		return null;
+		return eircodeBusiness.eircodeAndCoordinateLookup(requestData);
 	}
 
 	@Override
 	public List<EircodeResponseBean> coordinateLookup(EircodeRequestBean requestData) {
-		// TODO Auto-generated method stub
-		return null;
+		return eircodeBusiness.coordinateLookup(requestData);
 	}
 
 	@Override
 	public List<EircodeResponseBean> reverseGeoLookup(EircodeRequestBean requestData) {
-		// TODO Auto-generated method stub
-		return null;
+		return eircodeBusiness.reverseGeoLookup(requestData);
 	}
 
 }

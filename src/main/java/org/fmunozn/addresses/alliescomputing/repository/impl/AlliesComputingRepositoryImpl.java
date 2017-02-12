@@ -15,6 +15,7 @@ import org.fmunozn.addresses.utils.Utilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpEntity;
 import org.springframework.stereotype.Repository;
@@ -27,6 +28,7 @@ public class AlliesComputingRepositoryImpl implements AlliesComputingRepository 
 
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
+	
 	@Autowired
 	AlliesComputingProperties alliesComputingProperties;
 
@@ -68,12 +70,6 @@ public class AlliesComputingRepositoryImpl implements AlliesComputingRepository 
 	@Cacheable(value="eircodeLookupCache", key="#requestData.fragment")
 	public List<EircodeResponseBean> eircodeLookup(EircodeRequestBean requestData) {
 
-	    try {
-            Thread.sleep(5000);
-            logger.debug("Sleep Request");
-        } catch (InterruptedException e) {
-            throw new IllegalStateException(e);
-        }		
 		String urlString = generateUrl("ie", requestData.getFragment(), LookupEnum.LOOKUP_TYPE_ADDRESS.toString(), null, null);
 
 		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(urlString);
@@ -98,7 +94,8 @@ public class AlliesComputingRepositoryImpl implements AlliesComputingRepository 
 	}
 	
 	@Override
-	public EircodeResponseBean eircodeAndCoordinateLookup(EircodeRequestBean requestData) {
+	@Cacheable(value="eircodeLookupCache", key="#requestData.fragment")
+	public List<EircodeResponseBean> eircodeAndCoordinateLookup(EircodeRequestBean requestData) {
 		
 		String urlString = generateUrl("ie", requestData.getFragment(), LookupEnum.LOOKUP_TYPE_ADDRESS_GEOLOCATION.toString(), null, null);
 
@@ -111,20 +108,22 @@ public class AlliesComputingRepositoryImpl implements AlliesComputingRepository 
 		parameters.put("identifier", requestData.getIdentifier());
 		parameters.put("callback", requestData.getCallback());
 		parameters.put("page", requestData.getPage());
+		parameters.put("addtags", requestData.getAddTags());
 
 		Utilities.addRequestsParams(builder, parameters);	
 
 		RestTemplate restTemplate = new RestTemplate();	
 
-		HttpEntity<EircodeResponseBean> response = restTemplate.getForEntity(builder.build().encode().toUri(), EircodeResponseBean.class);
+		HttpEntity<EircodeResponseBean []> response = restTemplate.getForEntity(builder.build().encode().toUri(), EircodeResponseBean[].class);
 
-		return response.getBody();
+		return Arrays.asList(response.getBody());
 		
 	}
 
 
 	@Override
-	public EircodeResponseBean coordinateLookup(EircodeRequestBean requestData) {
+	@Cacheable(value="eircodeLookupCache", key="#requestData.fragment")
+	public List<EircodeResponseBean> coordinateLookup(EircodeRequestBean requestData) {
 		
 		String urlString = generateUrl("ie", requestData.getFragment(), LookupEnum.LOOKUP_TYPE_POSITON.toString(), null, null);
 
@@ -138,17 +137,18 @@ public class AlliesComputingRepositoryImpl implements AlliesComputingRepository 
 
 		RestTemplate restTemplate = new RestTemplate();	
 
-		HttpEntity<EircodeResponseBean> response = restTemplate.getForEntity(builder.build().encode().toUri(), EircodeResponseBean.class);
+		HttpEntity<EircodeResponseBean []> response = restTemplate.getForEntity(builder.build().encode().toUri(), EircodeResponseBean[].class);
 
-		return response.getBody();
+		return Arrays.asList(response.getBody());
 		
 	}
 
 
 	@Override
-	public EircodeResponseBean reverseGeoLookup(EircodeRequestBean requestData) {
+	@Cacheable(value="eircodeLookupCache", key="#requestData")
+	public List<EircodeResponseBean> reverseGeoLookup(EircodeRequestBean requestData) {
 		
-		String urlString = generateUrl("ie", requestData.getFragment(), LookupEnum.LOOKUP_TYPE_POSITON.toString(), null, null);
+		String urlString = generateUrl("ie", requestData.getFragment(), LookupEnum.LOOKUP_TYPE_REVERSE_COORDINATES.toString(), requestData.getLongitude(), requestData.getLatitude());
 
 		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(urlString);
 
@@ -166,10 +166,47 @@ public class AlliesComputingRepositoryImpl implements AlliesComputingRepository 
 
 		RestTemplate restTemplate = new RestTemplate();	
 
-		HttpEntity<EircodeResponseBean> response = restTemplate.getForEntity(builder.build().encode().toUri(), EircodeResponseBean.class);
+		HttpEntity<EircodeResponseBean []> response = restTemplate.getForEntity(builder.build().encode().toUri(), EircodeResponseBean[].class);
 
-		return response.getBody();
+		return Arrays.asList(response.getBody());
+		
 	}
+	
+	
+	@CacheEvict(value="eircodeLookupCache")
+	public void evictRequestDataByFragment(String fragment) {
+
+	}
+	
+	@Override
+	@Cacheable(value="eircodeLookupCache", key="#requestData.fragment")
+	public List<EircodeResponseBean> eircodeLookupWatchdog(EircodeRequestBean requestData, EircodeRequestBean watchdog) {
+
+		watchdog.getFragment();
+		
+		String urlString = generateUrl("ie", requestData.getFragment(), LookupEnum.LOOKUP_TYPE_ADDRESS.toString(), null, null);
+
+		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(urlString);
+
+		HashMap<String,String> parameters  = new HashMap<String,String>();
+		parameters.put("lines", requestData.getLines());
+		parameters.put("include", requestData.getInclude());
+		parameters.put("format", requestData.getFormat());
+		parameters.put("identifier", requestData.getIdentifier());
+		parameters.put("callback", requestData.getCallback());
+		parameters.put("page", requestData.getPage());
+
+		Utilities.addRequestsParams(builder, parameters);	
+
+		RestTemplate restTemplate = new RestTemplate();
+		
+
+		HttpEntity<EircodeResponseBean []> response = restTemplate.getForEntity(builder.build().encode().toUri(), EircodeResponseBean[].class);
+
+		return Arrays.asList(response.getBody());
+	}
+	
+	
 
 	private String generateUrl(String country, String fragment, String requestType, String longitude, String latitude){
 
@@ -201,7 +238,7 @@ public class AlliesComputingRepositoryImpl implements AlliesComputingRepository 
 
 			if(longitude != null && latitude != null){
 				
-				url = url + latitude + "/" + longitude + "/" + this.alliesComputingProperties.getApiReverseGeoUrl()+"/";
+				url = url  + this.alliesComputingProperties.getApiReverseGeoUrl()+"/" + country + "/" + latitude + "/" + longitude;
 				logger.debug("Reverse coordinates requested: "+url);			
 
 								
@@ -223,6 +260,9 @@ public class AlliesComputingRepositoryImpl implements AlliesComputingRepository 
 		return url;
 
 	}
+
+
+	
 	
 
 }

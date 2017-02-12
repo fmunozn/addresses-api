@@ -1,37 +1,45 @@
 package org.fmunozn.addresses.alliescomputing.repository.impl;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
-import java.util.List;
-
+import org.fmunozn.addresses.alliescomputing.repository.AlliesComputingRepository;
 import org.fmunozn.addresses.alliescomputing.request.EircodeRequestBean;
-import org.fmunozn.addresses.alliescomputing.response.EircodeResponseBean;
 import org.fmunozn.addresses.configuration.AddressesApiApplication;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit4.SpringRunner;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringBootTest(classes = AddressesApiApplication.class)
+@RunWith(SpringRunner.class)
+@SpringBootTest(classes = AddressesApiApplication.class, webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+@AutoConfigureMockMvc
 public class AlliesComputingRepositoryImplTest {
+	
+	// Cache Testing
+	
+	@Autowired
+	private AlliesComputingRepository repository;
+	
+	@Test
+	public void successIfMethodEircodeLookupExecutedOnce(){
+		
+		repository.evictRequestDataByFragment("D02X285");
+		
+		EircodeRequestBean erb1 = new EircodeRequestBean();
+		erb1.setFragment("D02X285");
+		
+		EircodeRequestBean erb2 = new EircodeRequestBean();
+		erb2.setFragment("D02X285");	
+		
+		EircodeRequestBean mockWatchdog = Mockito.mock(EircodeRequestBean.class);
+		
+		repository.eircodeLookupWatchdog(erb1, mockWatchdog);
+		repository.eircodeLookupWatchdog(erb2, mockWatchdog);
+		
+	    Mockito.verify(mockWatchdog, Mockito.times(1)).getFragment();
 
-    @Autowired
-    private AlliesComputingRepositoryImpl repository;
-
-    @Test
-    public void getAddressBasicTest() throws Exception {
-    	
-    	EircodeRequestBean requestData = new EircodeRequestBean();
-    	requestData.setFragment("D02X285");
-    	requestData.setLines("3");
-    	requestData.setFormat("json");
-    	
-    	List<EircodeResponseBean> response = repository.eircodeLookup(requestData);
-    	assertNotNull(response);
-        assertEquals("Dept of Communications, Climate Change and Natural Resources", response.get(0).getAddressline1());
-    }
+		
+	}
 
 }

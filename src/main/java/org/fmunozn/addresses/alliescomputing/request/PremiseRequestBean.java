@@ -23,6 +23,8 @@ public class PremiseRequestBean extends AddressRequestBean {
 	 * Use true to include alternative names for addresses known to and accepted by Royal Mail
 	 */
 	private String alias;
+	
+
 
 	
 	public String getPostcodeOnly() {
@@ -48,6 +50,8 @@ public class PremiseRequestBean extends AddressRequestBean {
 	public PremiseRequestBean() {
 		super();
 	}
+
+
 	
 
 }

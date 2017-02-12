@@ -65,7 +65,7 @@ public class EircodeControllerTest {
     }
     
     @Test
-    public void getCoordinatesTest() throws Exception {
+    public void getReverseCoordinatesTest() throws Exception {
         mvc.perform(MockMvcRequestBuilders.get("/pcw/test/rgeo/ie/53.332067/-6.255492?distance=50&format=json").accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))

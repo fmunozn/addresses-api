@@ -16,7 +16,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = AddressesApiApplication.class)
+@SpringBootTest(classes = AddressesApiApplication.class, webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @AutoConfigureMockMvc
 public class HealthCheckControllerTest {
 

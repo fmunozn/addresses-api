@@ -13,11 +13,15 @@ public interface AlliesComputingRepository {
 	
 	public List<EircodeResponseBean> eircodeLookup(EircodeRequestBean requestData);
 	
-	public EircodeResponseBean eircodeAndCoordinateLookup(EircodeRequestBean requestData);
+	public List<EircodeResponseBean> eircodeAndCoordinateLookup(EircodeRequestBean requestData);
 	
-	public EircodeResponseBean coordinateLookup(EircodeRequestBean requestData);
+	public List<EircodeResponseBean> coordinateLookup(EircodeRequestBean requestData);
 	
-	public EircodeResponseBean reverseGeoLookup(EircodeRequestBean requestData);
+	public List<EircodeResponseBean> reverseGeoLookup(EircodeRequestBean requestData);
+	
+	public void evictRequestDataByFragment(String string);
+	
+	public List<EircodeResponseBean> eircodeLookupWatchdog(EircodeRequestBean requestData, EircodeRequestBean watchdog);
 
 	
 }
