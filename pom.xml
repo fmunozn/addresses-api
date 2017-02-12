@@ -26,10 +26,7 @@
 
 	<dependencies>
 
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-cache</artifactId>
-		</dependency>
+		<!-- Global Spring Boot Dependencies + Testing -->
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -47,6 +44,19 @@
 			<scope>test</scope>
 		</dependency>
 
+		<!-- END OF Global Spring Boot Dependencies + Testing -->
+
+		<!-- Extended Production Like Dependencies -->
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
+
+		<!-- END OF Extended Production Like Dependencies -->
+
+		<!-- EHCache and Spring Cache Dependencies -->
+
 		<dependency>
 			<groupId>net.sf.ehcache</groupId>
 			<artifactId>ehcache</artifactId>
@@ -54,8 +64,11 @@
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-actuator</artifactId>
+			<artifactId>spring-boot-starter-cache</artifactId>
 		</dependency>
+
+		<!-- END OF EHCache and Spring Cache Dependencies -->
+
 
 	</dependencies>
 
@@ -90,18 +103,18 @@
 	</profiles>
 
 	<build>
+		<resources>
+			<resource>
+				<directory>${project.basedir}/src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
 		</plugins>
-		<resources>
-			<resource>
-				<directory>src/main/resources</directory>
-				<filtering>true</filtering>
-			</resource>
-		</resources>
 	</build>
 
 
