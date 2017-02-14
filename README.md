@@ -1,4 +1,4 @@
-# addresses-api
+# Addresses-api
 API to query for addresses based on their Eircode
 
 To run the project there are 3 different maven profiles:
