@@ -8,6 +8,7 @@ import org.fmunozn.addresses.alliescomputing.request.PremiseRequestBean;
 import org.fmunozn.addresses.alliescomputing.response.EircodeResponseBean;
 import org.fmunozn.addresses.alliescomputing.response.PremiseResponseBean;
 import org.fmunozn.addresses.business.EircodeBusiness;
+import org.fmunozn.addresses.exception.APIEircodeRequestValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,29 +24,28 @@ public class EircodeBusinessImpl implements EircodeBusiness {
 	AlliesComputingRepository repository;
 	
 	@Override
-	public List<PremiseResponseBean> fullUkPremiseAddressLookup(PremiseRequestBean requestData) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<EircodeResponseBean> eircodeLookup(EircodeRequestBean requestData) {
+	public List<EircodeResponseBean> eircodeLookup(EircodeRequestBean requestData) throws APIEircodeRequestValidationException {
 		return repository.eircodeLookup(requestData);
 	}
 
 	@Override
-	public List<EircodeResponseBean> eircodeAndCoordinateLookup(EircodeRequestBean requestData) {
+	public List<EircodeResponseBean> eircodeAndCoordinateLookup(EircodeRequestBean requestData) throws APIEircodeRequestValidationException {
 		return repository.eircodeAndCoordinateLookup(requestData);
 	}
 
 	@Override
-	public List<EircodeResponseBean> coordinateLookup(EircodeRequestBean requestData) {
+	public List<EircodeResponseBean> coordinateLookup(EircodeRequestBean requestData) throws APIEircodeRequestValidationException {
 		return repository.coordinateLookup(requestData);
 	}
 
 	@Override
-	public List<EircodeResponseBean> reverseGeoLookup(EircodeRequestBean requestData) {
+	public List<EircodeResponseBean> reverseGeoLookup(EircodeRequestBean requestData) throws APIEircodeRequestValidationException {
 		return repository.reverseGeoLookup(requestData);
 	}
 
+	@Override
+	public List<PremiseResponseBean> fullUkPremiseAddressLookup(PremiseRequestBean requestData) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

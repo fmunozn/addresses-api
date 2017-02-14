@@ -3,6 +3,7 @@ package org.fmunozn.addresses.alliescomputing.repository.impl;
 import org.fmunozn.addresses.alliescomputing.repository.AlliesComputingRepository;
 import org.fmunozn.addresses.alliescomputing.request.EircodeRequestBean;
 import org.fmunozn.addresses.configuration.AddressesApiApplication;
+import org.fmunozn.addresses.exception.APIEircodeRequestValidationException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -22,7 +23,7 @@ public class AlliesComputingRepositoryImplTest {
 	private AlliesComputingRepository repository;
 	
 	@Test
-	public void successIfMethodEircodeLookupExecutedOnce(){
+	public void successIfMethodEircodeLookupExecutedOnce() throws APIEircodeRequestValidationException{
 		
 		repository.evictRequestDataByFragment("D02X285");
 		

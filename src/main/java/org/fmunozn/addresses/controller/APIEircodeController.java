@@ -52,9 +52,11 @@ public class APIEircodeController {
 				page, null, null, null, null); 		
 		requestData.setIdentifier(identifier);
 		requestData.setCallback(callback);
-		requestData.setFormat("json");		
-
-		List<EircodeResponseBean> eircodeResponses = eircodeService.eircodeLookup(requestData);
+		requestData.setFormat("json");
+		
+		List<EircodeResponseBean> eircodeResponses = null;
+		
+		eircodeResponses = eircodeService.eircodeLookup(requestData);
 
 		return eircodeResponses;		
 
@@ -82,7 +84,8 @@ public class APIEircodeController {
 		requestData.setIdentifier(identifier);
 		requestData.setCallback(callback);
 		requestData.setFormat("json");		
-
+		
+		
 		List<EircodeResponseBean> eircodeResponses = eircodeService.eircodeAndCoordinateLookup(requestData);
 
 		return eircodeResponses;		
@@ -90,7 +93,7 @@ public class APIEircodeController {
 	}
 
 	@RequestMapping(path="/position/ie/{eircode}", method=RequestMethod.GET, produces=MediaType.APPLICATION_JSON_VALUE)
-	public @ResponseBody List<EircodeResponseBean> coordinateLookup(@PathVariable String eircode) {
+	public @ResponseBody List<EircodeResponseBean> coordinateLookup(@PathVariable String eircode) throws APIEircodeRequestValidationException {
 
 		logger.info("Request Eircode coordinates Service");
 		logger.debug("Fragment: "+eircode);
@@ -107,6 +110,7 @@ public class APIEircodeController {
 			requestData.setFormat("json");
 
 			eircodeService.coordinateLookup(requestData);
+
 		}
 
 		return eircodeResponses;		

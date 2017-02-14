@@ -15,8 +15,10 @@
 				<div class="row">
 					<div class="col-md-6"><label class="lgFormGroupInput" for="fragment">Address Fragment Or Eircode</label></div>
 					<div class="col-md-4">
+						
 						<input class="field-style field-split align-left" type="text" ng-model="address.fragment" id="fragment"
 						placeholder="Enter the desired Eircode or Address fragment"	required ng-minlength="5" />
+					  	
 						<div class="has-error" ng-show="addressSearchForm.$dirty">
 							<span ng-show="addressSearchForm.$dirty.fragment.$error.required">This is a required field</span>
 							<span ng-show="addressSearchForm.fragment.$error.minlength">Minimum length required is 5</span>
@@ -24,7 +26,12 @@
 						</div>
 					</div>
 					<div class="col-md-2">
-						<button type="submit" ng-click="searchAddress(address.fragment)">Search</button>
+						<label>Geoloc?<input type="checkbox" ng-model="address.withGeo"></label>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-offset-4 col-sm-4">
+							<button type="submit" class="btn btn-primary btn-block" ng-click="searchAddress(address)">Search</button>
 					</div>
 				</div>
 				</div>
@@ -35,11 +42,11 @@
 				<div class="row">
 					<div class="row">
 						<div class="col-md-6">
-							<label class="col-md-12" for="longitude">Longitude (-90 <= L <= 90)</label>
+							<label class="col-md-12" for="latitude">Longitude (-90 <= L <= 90)</label>
  						</div>
 						<div class="col-md-6">
-							<input class="field-style field-split align-left" type="text" ng-model="address.longitude"
-								id="longitude" placeholder="Enter the desired Longitude"/>
+							<input class="field-style field-split align-left" type="text" ng-model="address.latitude"
+								id="longitude" placeholder="Enter the desired Latitude"/>				
 						</div>
 					</div>
 					<div class="row">
@@ -47,8 +54,8 @@
 							<label class="col-md-12 control-lable" for="latitude">Latitude (-180 <= L <= 180)</label>
 						</div>
 						<div class="col-md-6">			
-							<input class="field-style field-split align-left" type="text" ng-model="address.latitude" id="latitude"
-								placeholder="Enter the desired Latitude"/>
+							<input class="field-style field-split align-left" type="text" ng-model="address.longitude" id="longitude"
+								placeholder="Enter the desired Longitude"/>
 						</div>
 					</div>
 					<div class="row">
@@ -62,7 +69,7 @@
 					</div>
 					<div class="row">
 						<div class="col-sm-offset-2 col-sm-4">
-							<button type="submit" class="btn btn-primary btn-block" ng-click="searchAddress(longitude,latitude,distance)">Search</button>
+							<button type="submit" class="btn btn-primary btn-block" ng-click="searchReverseGeo(address)">Search</button>
 						</div>
 					</div>
 				</div>
@@ -77,12 +84,31 @@
 		</div>
 		<div class="formcontainer">
 			<form name="addressDetailsForm" class="form-horizontal" ng-show="showTheForm">
+				<div class="row" ng-if="selectedAddress.addressline1">
+					<div class="col-md-6">				
+						<label class="col-md-12 control-lable" for="addressline1">Address Line 1:</label>
+					</div>
+					<div class="col-md-6">	
+						<input class="field-style field-split align-left" type="text" id="addressline1"
+						 ng-model="selectedAddress.addressline1" readonly/>
+					</div>
+				</div>
+				<div class="row" ng-if="selectedAddress.addressline2" >
+					<div class="col-md-6">				
+						<label class="col-md-12 control-lable" for="addressline2">Address Line 2:</label>
+					</div>
+					<div class="col-md-6">	
+						<input class="field-style field-split align-left" type="text" id="addressline2"
+						 ng-model="selectedAddress.addressline2" readonly/>
+					</div>
+				</div>
 				<div class="row">
 					<div class="col-md-6">				
 						<label class="col-md-12 control-lable" for="selectedStreet">Street:</label>
 					</div>
 					<div class="col-md-6">				
-						<input class="field-style field-split align-left" type="text" ng-model="selectedAddress.street" readonly/>
+						<input class="field-style field-split align-left" type="text" id="selectedStreet"
+							ng-model="selectedAddress.street" readonly/>
 					</div>
 				</div>
 				<div class="row">
@@ -90,7 +116,8 @@
 						<label class="col-md-12 control-lable" for="selectedNumber">Number:</label>
 					</div>
 					<div class="col-md-6">				
-						<input class="field-style field-split align-left" type="text" ng-model="selectedAddress.number" readonly/>
+						<input class="field-style field-split align-left" type="text" id="selectedNumber" 
+							ng-model="selectedAddress.number" readonly/>
 					</div>						
 				</div>
 				<div class="row">
@@ -98,7 +125,8 @@
 						<label class="col-md-12 control-lable" for="selectedPostCode">Post Code:</label>
 					</div>
 					<div class="col-md-6">	
-						<input class="field-style field-split align-left" type="text" ng-model="selectedAddress.postcode" readonly/>
+						<input class="field-style field-split align-left" type="text" id="selectedPostCode"
+							ng-model="selectedAddress.postcode" readonly/>
 					</div>			
 				</div>
 				<div class="row">
@@ -106,7 +134,8 @@
 						<label class="col-md-12 control-lable" for="selectedPostTown">Post Town:</label>
 					</div>
 					<div class="col-md-6">	
-						<input class="field-style field-split align-left" type="text" ng-model="selectedAddress.posttown" readonly/>
+						<input class="field-style field-split align-left" type="text" id="selectedPostTown"
+							ng-model="selectedAddress.posttown" readonly/>
 					</div>
 				</div>
 				<div class="row">
@@ -114,7 +143,26 @@
 						<label class="col-md-12 control-lable" for="selectedCounty">County:</label>
 					</div>
 					<div class="col-md-6">	
-						<input class="field-style field-split align-left" type="text" ng-model="selectedAddress.county" readonly/>
+						<input class="field-style field-split align-left" type="text" id="selectedCounty"
+							ng-model="selectedAddress.county" readonly/>
+					</div>
+				</div>
+				<div class="row" ng-if="selectedAddress.latitude">
+					<div class="col-md-6">				
+						<label class="col-md-12 control-lable" for="latitude">Latitude:</label>
+					</div>
+					<div class="col-md-6">	
+						<input class="field-style field-split align-left" type="text" id="latitude"
+							ng-model="selectedAddress.latitude" readonly/>
+					</div>
+				</div>
+				<div class="row" ng-if="selectedAddress.longitude">
+					<div class="col-md-6">				
+						<label class="col-md-12 control-lable" for="longitude">Longitude:</label>
+					</div>
+					<div class="col-md-6">	
+						<input class="field-style field-split align-left" type="text" id="longitude" 
+							ng-model="selectedAddress.longitude" readonly/>
 					</div>
 				</div>
 			</form>

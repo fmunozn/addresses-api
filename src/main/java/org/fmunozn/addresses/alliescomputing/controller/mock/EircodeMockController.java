@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import org.fmunozn.addresses.alliescomputing.response.EircodeResponseBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,7 +28,9 @@ public class EircodeMockController {
 
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-
+	@Value("${mock.reverse.geolocation.file}")
+	private String userBucketPath;
+	
 	@RequestMapping(path="/address/ie/{fragment}", method=RequestMethod.GET, produces=MediaType.APPLICATION_JSON_VALUE)
 	public @ResponseBody ArrayList<EircodeResponseBean> addressLookup(
 			@PathVariable String fragment,
@@ -148,7 +151,7 @@ public class EircodeMockController {
 			
 			try {
 				eircodeResponses = mapper.readValue(
-						new File("src/main/resources/reverseCoordResponse.json"), new TypeReference<ArrayList<EircodeResponseBean>>(){});
+						new File(""), new TypeReference<ArrayList<EircodeResponseBean>>(){});
 			} catch (JsonParseException e) {
 				logger.error("Problem parsing address file in reverse coordinate lookup"+e.getMessage());
 			} catch (JsonMappingException e) {

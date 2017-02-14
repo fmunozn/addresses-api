@@ -87,6 +87,23 @@
 				<alliescomputing.api.geo.url>addressgeo</alliescomputing.api.geo.url>
 				<alliescomputing.api.position.url>position</alliescomputing.api.position.url>
 				<alliescomputing.api.geo.reverse.url>rgeo</alliescomputing.api.geo.reverse.url>
+				<mock.reverse.geolocation.file>src/main/resources/reverseCoordResponse.json</mock.reverse.geolocation.file>
+			</properties>
+		</profile>
+		<profile>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<id>jar.execution</id>
+			<properties>
+				<alliescomputing.api.key>test</alliescomputing.api.key>
+				<alliescomputing.api.scheme>http</alliescomputing.api.scheme>
+				<alliescomputing.api.hostname>localhost:8080/pcw</alliescomputing.api.hostname>
+				<alliescomputing.api.address.url>address</alliescomputing.api.address.url>
+				<alliescomputing.api.geo.url>addressgeo</alliescomputing.api.geo.url>
+				<alliescomputing.api.position.url>position</alliescomputing.api.position.url>
+				<alliescomputing.api.geo.reverse.url>rgeo</alliescomputing.api.geo.reverse.url>
+				<mock.reverse.geolocation.file>reverseCoordResponse.json</mock.reverse.geolocation.file>
 			</properties>
 		</profile>
 		<profile>
